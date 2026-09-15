@@ -1,4 +1,4 @@
-const workDaysRepository = {
+const callendarRepository = {
   checkWorkDay: async (date: string): Promise<boolean> => {
     const day = new Date(date);
 
@@ -38,4 +38,4 @@ interface Holiday {
   date: string;
 }
 
-export default workDaysRepository;
+export default callendarRepository;
