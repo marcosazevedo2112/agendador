@@ -1,4 +1,4 @@
-import {Request, Response, NextFunction} from 'express';
+import {NextFunction, Request, Response} from 'express';
 import {z} from 'zod';
 
 export function validateQuery(schema: z.ZodType) {
@@ -8,14 +8,14 @@ export function validateQuery(schema: z.ZodType) {
     if (!result.success) {
       res.status(400).json({
         error: 'Invalid query parameters',
-        details: result.error.flatten(),
+        details: z.treeifyError(result.error),
+        humanReadable: z.prettifyError(result.error),
       });
 
       return;
     }
 
-    req.query = result.data as typeof req.query;
-
+    res.locals.validatedQuery = result.data;
     next();
   };
 }
@@ -27,14 +27,14 @@ export function validateBody(schema: z.ZodType) {
     if (!result.success) {
       res.status(400).json({
         error: 'Invalid request body',
-        details: result.error.flatten(),
+        details: z.treeifyError(result.error),
+        humanReadable: z.prettifyError(result.error),
       });
 
       return;
     }
 
-    req.body = result.data as typeof req.body;
-
+    res.locals.validatedBody = result.data;
     next();
   };
 }
